@@ -349,6 +349,35 @@ if &#95;&#95;name&#95;&#95; == "&#95;&#95;main&#95;&#95;" :
         Process(target=f, args=(lock, num)).start()
 </source>
 
+<h4>sh</h4>
+
+Home：[https://github.com/amoffat/sh]
+
+这个项目可以用来取代标准库中的 subprocess；同时兼容 Python2 和 Python3。
+
+使用它可以写出比 subprocess 更简洁、更优雅的代码。
+
+代码示例——获取命令输出
+<source lang="python">
+from sh import ifconfig
+print(ifconfig("wlan0"))
+</source>
+
+代码示例——命令行参数
+<source lang="python">
+from sh import curl
+&#35; 传统风格
+curl("https://program-think.blogspot.com/", "-o", "test.html", "--silent")
+&#35; 命名参数风格
+curl("https://program-think.blogspot.com/", o="test.html", silent=True)
+</source>
+
+代码示例——管道
+<source lang="python">
+from sh import ls, wc
+print(wc(ls("/etc", "-1"), "-l"))
+</source>
+
 == 3.4 本地进程间通信（IPC） ==
 
 <h4>mmap</h4>
@@ -739,15 +768,60 @@ Home：[https://github.com/jmalonzo/pywebkitgtk]
 
 PyWebKitGtk 则提供了对 WebKitGtk 的 Python 封装。
 
-== 4.6 （其它） ==
+== 4.6 WebSocket ==
 
+（关于 WebSocket 的介绍，可以参见维基百科的“[https://zh.wikipedia.org/wiki/WebSocket 这个链接]”）
 <h4>pywebsocket</h4>
 
 Home：[https://github.com/google/pywebsocket]
 
-这是 Google 提供的 [https://zh.wikipedia.org/wiki/WebSocket WebSocket] 服务端。
+这是 Google 提供的 WebSocket【服务端】。
 
 该项目包含一个可独立运行的 server 以及一个 Apache 扩展模块（mod_pywebsocket）。
+
+<h4>AutobahnPython</h4>
+
+Home：[https://github.com/crossbario/autobahn-python]
+
+这是 [http://crossbar.io/autobahn Autobahn] 项目的子项目，同时提供了 WebSocket 的“服务端 & 客户端”。
+
+它兼容 Python2 和 Python3，另外还兼容 PyPy 和 Jython。
+
+网络方面，它可以跟“asyncio 标准库”以及“[https://en.wikipedia.org/wiki/Twisted_%28software%29 Twisted]”整合。
+
+除了实现 WebSocket 协议，它还完整实现了 WAMP（Web Application Messaging Protocol）。
+
+代码示例——Echo Server
+<source lang="python">
+from autobahn.twisted.websocket import WebSocketServerProtocol
+
+class MyServerProtocol(WebSocketServerProtocol) :
+    def onConnect(self, request) :
+        print("Client connecting: {}".format(request.peer))
+
+    def onOpen(self) :
+        print("WebSocket connection open.")
+
+    def onMessage(self, payload, isBinary) :
+        if isBinary :
+            print("Binary message received: {} bytes".format(len(payload)))
+        else:
+            print("Text message received: {}".format(payload.decode("utf8")))
+        self.sendMessage(payload, isBinary)
+
+    def onClose(self, wasClean, code, reason) :
+        print("WebSocket connection closed: {}".format(reason))
+</source>
+
+<h4>ws4py</h4>
+
+Home：[https://github.com/Lawouach/WebSocket-for-Python]
+
+此项目同时提供了 WebSocket 的“服务端 & 客户端”；并同时兼容 Python2 和 Python3。
+
+其【服务端】可以跟“CherryPy、gevent、wsgiref、asyncio”整合；其【客户端】可以跟“Tornado、gevent”整合。
+
+== 4.7 （其它） ==
 
 <h4>selenium</h4>
 
